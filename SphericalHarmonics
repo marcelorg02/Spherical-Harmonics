@@ -1,0 +1,44 @@
+clc
+clear
+clf
+
+N = 512;  %Grid Points
+phi = linspace(0,2*pi,N); 
+theta = linspace(0,pi,N);
+[P,T] = meshgrid(phi,theta);
+X = cos(P).*sin(T);
+Y = sin(T).*sin(P);
+Z = cos(T);
+f = SH(4,3,T,P);  %Spherical Harmonics evaluation
+f = real(f); %Taking the real part of the spherical harmonics
+Xp = X.*f;
+Yf = Y.*f;
+Zf = Z.*f;
+
+figure(1)
+surf(Xp,Yf,Zf,f), colormap jet, shading interp;
+xlabel("X");
+ylabel("Y");
+zlabel("Z");
+title("Atomic orbitals polar representations");
+axis equal
+
+
+figure(2)
+surf(X,Y,Z,f), colormap jet, shading interp;
+xlabel("X");
+ylabel("Y");
+zlabel("Z");
+title("Real part of spherical hamronics in sphere");
+axis equal
+
+
+
+function f = SH(l,m,T,P)
+f = legendre(l,cos(T));
+if l ~= 0
+    f = reshape(f(m+1,:,:),size(P));
+end
+f = f.*exp(1j*m*P);
+end
+
